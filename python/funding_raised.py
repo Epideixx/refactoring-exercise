@@ -11,11 +11,13 @@ class FundingRaised:
     Returns:
         list: A list of dictionaries representing the matching rows in the CSV file.
     """
+    # Import data from CSV file
     csv_data = pd.read_csv(file_path, delimiter=',', quotechar='"', dtype=str)
 
+    # Go through each filter option and apply it to the DataFrame
     for category in ['company_name', 'city', 'state', 'round']:
       if category in options:
-        # Convert the column to string type to avoid comparison issues
+        # Filter the DataFrame based on the current category
         csv_data = csv_data[csv_data[category] == options[category]]
 
     # Convert the DataFrame to a list of dictionaries
@@ -34,7 +36,10 @@ class FundingRaised:
     Raises:
         RecordNotFound: If no matching record is found.
     """
+    # Find all matches using the where method
     all_matches = FundingRaised.where(options, file_path)
+
+    # If there are matches, return the first one, else raise an exception
     if len(all_matches) > 0:
       return all_matches[0]
     else:
