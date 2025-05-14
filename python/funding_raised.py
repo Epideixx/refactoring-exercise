@@ -49,79 +49,20 @@ class FundingRaised:
 
   @staticmethod
   def find_by(options, file_path = "../startup_funding.csv"):
-    with open("../startup_funding.csv", "rt") as csvfile:
-      data = csv.reader(csvfile, delimiter=',', quotechar='"')
-      # skip header
-      next(data)
-      csv_data = []
-      for row in data:
-        csv_data.append(row)
-
-    if 'company_name' in options:
-      for row in csv_data:
-        if row[1] == options['company_name']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
-
-    if 'city' in options:
-      for row in csv_data:
-        if row[4] == options['city']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
-
-    if 'state' in options:
-      for row in csv_data:
-        if row[5] == options['state']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
-
-    if 'round' in options:
-      for row in csv_data:
-        if row[9] == options['round']:
-          mapped = {}
-          mapped['permalink'] = row[0]
-          mapped['company_name'] = row[1]
-          mapped['number_employees'] = row[2]
-          mapped['category'] = row[3]
-          mapped['city'] = row[4]
-          mapped['state'] = row[5]
-          mapped['funded_date'] = row[6]
-          mapped['raised_amount'] = row[7]
-          mapped['raised_currency'] = row[8]
-          mapped['round'] = row[9]
-          return mapped
-
-    raise RecordNotFound
+    """Find a single record in the CSV data based on the provided options. If multiple records match, return the first one.
+    Args:
+        options (dict): A dictionary containing the filter options. The keys can be 'company_name', 'city', 'state', or 'round'.
+        file_path (str): The path to the CSV file. Default is "../startup_funding.csv".
+    Returns:
+        dict: A dictionary representing the first matching row in the CSV file.
+    Raises:
+        RecordNotFound: If no matching record is found.
+    """
+    all_matches = FundingRaised.where(options, file_path)
+    if len(all_matches) > 0:
+      return all_matches[0]
+    else:
+      raise RecordNotFound
 
 class RecordNotFound(Exception):
   pass
