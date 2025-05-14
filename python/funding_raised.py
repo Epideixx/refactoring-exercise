@@ -1,21 +1,4 @@
 import pandas as pd
-import csv
-
-def read_data(file_path : str = "../startup_funding.csv"):
-  """Read CSV data and return a DataFrame."""
-  data = pd.read_csv(file_path, delimiter=',', quotechar='"', dtype=str)
-  return data
-
-def find_data_in_csv(dataframe: pd.DataFrame, column_name: str, value: str) -> pd.DataFrame:
-  """Filter dataframe based on column value and return matching rows as a DataFrame.
-  Args:
-      dataframe (pd.DataFrame): The DataFrame to filter.
-      column_name (str): The name of the column to filter by.
-      value (str): The value to match in the specified column.
-  Returns:
-      pd.DataFrame: A DataFrame containing the rows that match the specified column value.
-  """
-  return dataframe[dataframe[column_name] == value]
 
 class FundingRaised:
   
@@ -28,19 +11,12 @@ class FundingRaised:
     Returns:
         list: A list of dictionaries representing the matching rows in the CSV file.
     """
-    csv_data = read_data(file_path=file_path)
+    csv_data = pd.read_csv(file_path, delimiter=',', quotechar='"', dtype=str)
 
-    if 'company_name' in options:
-      csv_data = find_data_in_csv(csv_data, 'company_name', options['company_name'])
-
-    if 'city' in options:
-      csv_data = find_data_in_csv(csv_data, 'city', options['city'])
-
-    if 'state' in options:
-      csv_data = find_data_in_csv(csv_data, 'state', options['state'])
-
-    if 'round' in options:
-      csv_data = find_data_in_csv(csv_data, 'round', options['round'])
+    for category in ['company_name', 'city', 'state', 'round']:
+      if category in options:
+        # Convert the column to string type to avoid comparison issues
+        csv_data = csv_data[csv_data[category] == options[category]]
 
     # Convert the DataFrame to a list of dictionaries
     output = csv_data.to_dict(orient='records')
